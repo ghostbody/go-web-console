@@ -97,7 +97,7 @@ func PublicKeyAuthFunc(key string, passphrase string) (ssh.AuthMethod, error) {
 	bkey := []byte(key)
 	var signer ssh.Signer
 	var err error
-	if passphrase != "" {
+	if passphrase == "" {
 		signer, err = ssh.ParsePrivateKey(bkey)
 	} else {
 		bpassphrase := []byte(passphrase)

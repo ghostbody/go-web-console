@@ -19,7 +19,8 @@ func initV1ApiGroup(r *gin.Engine) *gin.Engine {
 	v1ws.GET("/ping", v1WsPing)
 	v1api := r.Group("/api/v1")
 	v1api.GET("/ping", v1ApiPing)
-	v1api.POST("/link", v1ApiLink)
+	v1api.POST("/links", v1ApiCreateLink)
+	v1api.GET("/links", v1ApiPing)
 	return r
 }
 
