@@ -92,6 +92,11 @@ func (cm *SSHClientsManager) Connect2TargetWithConfig(
 	return sshClient, nil
 }
 
+// GetSSHClients gets all clients
+func (cm *SSHClientsManager) GetSSHClients() map[string]*SSHClient {
+	return cm.clients
+}
+
 // PublicKeyAuthFunc parses a string key (maybe with a passphrase) to ssh.AuthMethod
 func PublicKeyAuthFunc(key string, passphrase string) (ssh.AuthMethod, error) {
 	bkey := []byte(key)

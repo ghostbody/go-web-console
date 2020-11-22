@@ -13,7 +13,7 @@ func v1ApiPing(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
-type linkRequest struct {
+type createLinkRequest struct {
 	Hostname   string `json:"hostname"`
 	Port       int    `json:"port"`
 	Username   string `json:"username"`
@@ -23,13 +23,21 @@ type linkRequest struct {
 	Passphrase string `json:"passphrase,omimtempty"`
 }
 
-type linkResponse struct {
-	ClientID     string `json:"clientID"`
-	ClientSecret string `json:"clientSecret"`
+type createLinkResponse struct {
+	ClientID     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+}
+
+type clientData struct {
+	ClientID string `json:"clientID"`
+}
+
+type getLinkResponse struct {
+	Clients map[string]clientData `json:"clients"`
 }
 
 func v1ApiCreateLink(c *gin.Context) {
-	var json linkRequest
+	var json createLinkRequest
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.Error(exceptions.NewRespErrorWithStr(http.StatusBadRequest, "can not parse json: %s", err.Error()))
@@ -66,8 +74,27 @@ func v1ApiCreateLink(c *gin.Context) {
 		)
 		return
 	}
-	c.JSON(http.StatusOK, linkResponse{
+	c.JSON(http.StatusOK, createLinkResponse{
 		ClientID:     client.ClientID,
 		ClientSecret: client.ClientSecret,
 	})
+}
+
+func v1ApiGetLinks(c *gin.Context) {
+	sshClientManager := sshclient.GetSSHClientsManager()
+
+	clients := sshClientManager.GetSSHClients()
+
+	responseClients := make(map[string]clientData, len(clients))
+
+	for clientID, client := range clients {
+		responseClients[clientID] = clientData{
+			ClientID: client.ClientID,
+		}
+	}
+
+	c.JSON(http.StatusOK, getLinkResponse{
+		Clients: responseClients,
+	})
+
 }
