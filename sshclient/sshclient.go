@@ -97,6 +97,15 @@ func (cm *SSHClientsManager) GetSSHClients() map[string]*SSHClient {
 	return cm.clients
 }
 
+// GetSSHClientByClientID get client by id
+func (cm *SSHClientsManager) GetSSHClientByClientID(clientID string) *SSHClient {
+	client, ok := cm.clients[clientID]
+	if ok {
+		return client
+	}
+	return nil
+}
+
 // PublicKeyAuthFunc parses a string key (maybe with a passphrase) to ssh.AuthMethod
 func PublicKeyAuthFunc(key string, passphrase string) (ssh.AuthMethod, error) {
 	bkey := []byte(key)
